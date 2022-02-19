@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="us">
+<head>
+	<meta charset="utf-8">
+	<title>GUI basic</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+
+    <h2 class="demoHeaders">Web Browser GUI</h2>
+    <fieldset>
+        <legend>Text search</legend>
+        <div id="controlgroup">
+            <form id="info" >
+                <label for="tryWord">Try word:</label><br>
+                <input type="text" id="tryWord" name="tryWord"><br>
+                <input type="reset" value="Word search">
+              </form>
+            
+              <p id="message" > </p>
+        </div>
+    </fieldset>
+
+    <table id="answerTable">
+		<tr>
+			<td> </td>
+			<td calss="answer" id="ans_w1">1</td>
+			<td calss="answer" id="ans_w2">2</td>
+			<td calss="answer" id="ans_w3">3</td>
+			<td calss="answer" id="ans_w4">4</td>
+			<td calss="answer" id="ans_w5">5</td>
+		</tr>
+    </table>
+
+  <script>
+	const info = document.getElementById('info')
+	const tryWord = document.getElementById('tryWord')
+	const msg = document.getElementById('message')
+	var s1, s2
+	const WORD_LENGTH = 5
+
+	info.addEventListener('reset', function() { compare()} )
+
+
+	const answers = ['HAPPY', 'WORDY', 'LAZZY', 'APPLE', 'CLASS', 'TABLE']
+	var answer = ''
+	if (answer.length < 1) {
+		// zero based array index
+		let randIdx = Math.ceil(Math.random() * answers.length) - 1
+		console.log(randIdx)
+		answer = answers[randIdx]
+		console.log(answer)
+	}
+
+    function showMsg()
+    {
+        msg.innerHTML = 'Input 5 letter word then press word search button'
+    }
+
+    showMsg()
+
+    var matchIndexArray = []
+
+	var tryWordCounts = 0
+    var wordColorIndexArray = new Array(5)
+
+    function print(resultMsg) 
+    {
+        msg.innerHTML = resultMsg
+    }
+    
+    function updateAnswerGUI()
+    {
+        const answer_w1 = document.getElementById('ans_w1')
+        answer_w1.innerText = s2[0]
+        answer_w1.setAttribute('style', 'background:LightGreen')
+        
+        const answer_w2 = document.getElementById('ans_w2')
+        answer_w2.innerText = s2[1]
+        answer_w2.setAttribute('style', 'background:LightGreen')
+        
+        const answer_w3 = document.getElementById('ans_w3')
+        answer_w3.innerText = s2[2]
+        answer_w3.setAttribute('style', 'background:LightGreen')
+        
+        const answer_w4 = document.getElementById('ans_w4')
+        answer_w4.innerText = s2[3]
+        answer_w4.setAttribute('style', 'background:LightGreen')
+        
+        const answer_w5 = document.getElementById('ans_w5')
+        answer_w5.innerText = s2[4]
+        answer_w5.setAttribute('style', 'background:LightGreen')
+        
+	}
+
+	function updateStyle(wordIdx)
+	{
+		const userWordWord = document.createElement('td')
+		if (wordIdx < s1.length) {
+			userWordWord.innerText = s1[wordIdx].toUpperCase()
+		} else {
+			userWordWord.innerText = '_'
+		}
+		
+		if (wordColorIndexArray[wordIdx] == 2) {
+			userWordWord.setAttribute('style', 'background:LightGreen')
+		} else if (wordColorIndexArray[wordIdx] == 1) {
+			userWordWord.setAttribute('style', 'background:Khaki')
+		} else {
+			userWordWord.setAttribute('style', 'background:LightGray')
+		}
+
+		return userWordWord
+	}
+
+	function addUserWord(index)
+	{
+		const answerTable = document.getElementById('answerTable')
+		const userWordRow = document.createElement('tr')
+		const userWordIndex = document.createElement('td')
+		userWordIndex.innerText = 'Try ' + index.toString()
+		userWordIndex.setAttribute('style', 'background:LightBlue')
+
+		const userWordWord1 = updateStyle(0)
+		const userWordWord2 = updateStyle(1)
+		const userWordWord3 = updateStyle(2)
+		const userWordWord4 = updateStyle(3)
+		const userWordWord5 = updateStyle(4)
+
+		// update gui
+		answerTable.appendChild(userWordRow)
+		answerTable.appendChild(userWordIndex)
+		answerTable.appendChild(userWordWord1)
+		answerTable.appendChild(userWordWord2)
+		answerTable.appendChild(userWordWord3)
+		answerTable.appendChild(userWordWord4)
+		answerTable.appendChild(userWordWord5)
+		
+	}
+
+    function compare() 
+    {
+        s1 = tryWord.value.toUpperCase()
+        // only read first 5 letters
+        s1 = s1.substr(0, WORD_LENGTH)
+        console.log(s1)
+
+        s2 = answer
+        var cnt = 0
+        var chars = 0
+        var resultMsg = ''
+        var idxBegin = -1
+ 
+        for (var i=0; i<s2.length; i++) {
+			wordColorIndexArray[i] = 0
+            for (var j=0; j<s1.length; j++) {
+                if (s2[j] == s1[i]) {
+					console.log('Match found: [' + s2[j] + '] at: (' + i + ', ' + j + ')')
+					if (j == i) {
+						wordColorIndexArray[i] = 2
+						break
+					} else {
+						wordColorIndexArray[i] = 1
+					}
+				}
+            }
+        }
+        
+        for (idx = 0; idx < wordColorIndexArray.length; idx++) {
+            console.log('wordColorIndexArray[' + idx + ']: ' + wordColorIndexArray[idx])
+        }
+
+        resultMsg = 'Try word: ' + s1 + '<br > Answer: ' + s2 + '<br >'
+        print(resultMsg)
+
+        tryWordCounts += 1
+        
+        // update GUI
+        updateAnswerGUI()
+        addUserWord(tryWordCounts)
+
+        // clean up 
+        matchIndexArray = []
+        wordColorIndexArray = new Array(5)
+
+    }
+
+  </script>
+
+</body>
+
+</html>
